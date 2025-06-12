@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'mdapp/css/index.css' %}" >
+{% endblock %}
+
+{% block content %}
+<div class="body">
+    <h1>ファイル作成画面</h1>
+    
+    <form method="post">
+        {% csrf_token %}
+        {{ form.title }}
+        {{ form.base_text }}
+        <input type="submit" value="🖋">
+    </form>
+</div>
+
+{% endblock %}

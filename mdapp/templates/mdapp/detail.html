@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'mdapp/css/index.css' %}" >
+{% endblock %}
+
+{% block content %}
+
+    <h1>
+        <div>{{ object.title }}</div>
+    </h1>
+
+    <div>
+        <div>{{ object.html_text|safe }}</div>
+    </div>
+
+    <a href="/files/{{object.id}}/update">更新</a>
+
+{% endblock %}

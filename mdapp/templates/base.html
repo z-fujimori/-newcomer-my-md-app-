@@ -1,0 +1,18 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <h1><a href="/">myマークダウンメモ</a></h1>
+    <hr>
+    {% block content %}{% endblock %}
+    <hr>
+    <a href="{% url 'mdapp:index' %}">一覧へ戻る</a>
+    <a href="{% url 'mdapp:create' %}">ファイル作成</a>
+</body>
+</html>

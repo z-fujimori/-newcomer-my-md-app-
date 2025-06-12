@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+{% endblock %}
+
+{% block content %}
+
+<h1>とりまホーム画面</h1>
+
+<div >
+    {% if object_list %}
+        {% for item in object_list %}
+        <div style="padding: 5px; margin: 5px; border: 1px solid black;">
+            <a href="/files/{{item.id}}">{{ item.title }}</a>
+            <!-- <div> {{ item.base_text }} </div>
+            <div> {{ item.html_text }} </div> -->
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+
+{% endblock %}
