@@ -6,11 +6,8 @@
     height: 400px;
 }
 
-.code_block {
-    background-color: rgb(58, 57, 57);
-    color: aliceblue;
-    padding: 5px;
-}
-.code_block_title {
-    font-size: small;
+.html-fild {
+    background-color: rgb(235, 235, 235);
+    padding: 10px;
+    border-radius: 5px;
 }
