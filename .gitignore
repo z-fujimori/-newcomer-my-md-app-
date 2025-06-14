@@ -1,1 +1,5 @@
 denv/
+venv/
+djaenv/
+nenv/
+env/
