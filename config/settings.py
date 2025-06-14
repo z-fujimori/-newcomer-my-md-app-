@@ -37,7 +37,14 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'mdapp.apps.MdappConfig'
+    'mdapp.apps.MdappConfig',
+    "accounts", 
+]
+
+# emailでログインしたい
+AUTHENTICATION_BACKENDS = [
+    'accounts.backends.EmailBackend',
+    # 'django.contrib.auth.backends.ModelBackend',  # fallback
 ]
 
 MIDDLEWARE = [
