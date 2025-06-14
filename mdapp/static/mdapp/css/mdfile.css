@@ -8,8 +8,10 @@
     font-size: small;
     color: rgb(58, 57, 57);
     background-color: rgb(214, 214, 214);
-    border-radius: 5px;
+    border-bottom-left-radius: 3px;
+    border-bottom-right-radius: 3px;
     padding: 2px;
+    top: 0px;
     position: absolute;
 }
 

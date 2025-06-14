@@ -59,11 +59,21 @@ class Delet(DeleteView):
         return HttpResponseRedirect(reverse_lazy('mdapp:ditail', kwargs={'pk': id}))  # 分からなければ詳細
 
 def get_pdf_bytedeta(request, pk):
-    pdf_bytes = pdf_gerater.generater("<h1>おなしゃす</h1>")
-    response = HttpResponse(pdf_bytes, content_type='application/pdf')
-    # Content-Disposition ヘッダーを設定して、ダウンロード時のファイル名を指定
-    # 'inline' にするとブラウザで直接開かれ、'attachment' にするとダウンロードダイアログが表示される
-    # response['Content-Disposition'] = 'inline; filename="generated_report.pdf"'
-    # ダウンロードさせる場合
-    response['Content-Disposition'] = 'attachment; filename="generated_report.pdf"'
-    return response
+    try:
+        mdfile_instance = Mdfile.objects.get(pk=pk) 
+        html_text = mdfile_instance.html_text
+        pdf_bytes = pdf_gerater.generater(html_text)
+        response = HttpResponse(pdf_bytes, content_type='application/pdf')
+        # Content-Disposition ヘッダーを設定して、ダウンロード時のファイル名を指定
+        # 'inline' にするとブラウザで直接開かれ、'attachment' にするとダウンロードダイアログが表示される
+        # response['Content-Disposition'] = 'inline; filename="generated_report.pdf"'
+        # ダウンロードさせる場合
+        response['Content-Disposition'] = f"""attachment; filename="{mdfile_instance.title}.pdf" """
+        return response
+    except Mdfile.DoesNotExist:
+        # 指定された pk の Mdfile が見つからない場合の処理
+        return HttpResponse("指定された記事が見つかりませんでした。", status=404)
+    except Exception as e:
+        # その他の予期せぬエラー
+        print(f"ビュー関数内でエラーが発生しました: {e}")
+        return HttpResponse(f"エラーが発生しました: {e}", status=500)
