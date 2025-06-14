@@ -62,13 +62,14 @@ def get_pdf_bytedeta(request, pk):
     try:
         mdfile_instance = Mdfile.objects.get(pk=pk) 
         html_text = mdfile_instance.html_text
+        title = mdfile_instance.title
         pdf_bytes = pdf_gerater.generater(html_text)
         response = HttpResponse(pdf_bytes, content_type='application/pdf')
         # Content-Disposition ヘッダーを設定して、ダウンロード時のファイル名を指定
         # 'inline' にするとブラウザで直接開かれ、'attachment' にするとダウンロードダイアログが表示される
         # response['Content-Disposition'] = 'inline; filename="generated_report.pdf"'
         # ダウンロードさせる場合
-        response['Content-Disposition'] = f"""attachment; filename="{mdfile_instance.title}.pdf" """
+        response['Content-Disposition'] = f"""attachment; filename="{title}.pdf" """
         return response
     except Mdfile.DoesNotExist:
         # 指定された pk の Mdfile が見つからない場合の処理
