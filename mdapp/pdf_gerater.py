@@ -27,14 +27,7 @@ def generater(html_text):
     html_content = f"""<!DOCTYPE html><html><head><meta charset='utf-8'><title>PDF</title><style>{css_content}</style></head><body>{html_text}</body></html>"""
     pdf_buffer = io.BytesIO()
     try:
-        # pdf_buffer = pdfkit.from_string(html_content, False)
         HTMLtoPDF(string=html_content).write_pdf(target=pdf_buffer)
-        HTMLtoPDF(string=html_content).write_pdf(target="pdf_buffer.pdf")
-        # print(html_content)
-        # HTMLtoPDF(string=html_content).
-        print("pdf が正常に生成されました")
-        print(pdf_buffer)
-        # print(pdf_data.write_pdf("test.pdf", stylesheets=[]))
     except Exception as e:
         print(f"PDF生成中にエラーが発生しました: {e}")
     pdf_buffer.seek(0)
