@@ -2,7 +2,6 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth import authenticate
-from .models import BudgetSetting
 
 User = get_user_model()
 
@@ -34,9 +33,3 @@ class CustomAuthenticationForm(forms.Form):
             if self.user_cache is None:
                 raise forms.ValidationError("ログイン情報が正しくありません")
         return self.cleaned_data
-    
-
-class SettingForm(forms.ModelForm):
-    class Meta:
-        model = BudgetSetting
-        fields = ["max_weekly_limit", "monthly_buffer"]

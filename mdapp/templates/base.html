@@ -5,14 +5,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <h1><a href="/">myマークダウンメモ</a></h1>
-    <hr>
-    {% block content %}{% endblock %}
-    <hr>
+    <header>
+        <nav>
+            <div class="container">
+                <div class="nav-content">
+                    <a href="{% url 'mdapp:index' %}" class="logo">MDノート</a>
+                    
+                    <div class="nav-links">
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'accounts:logout' %}" class="nav-link">ログアウト</a>
+                        {% else %}
+                            <a href="{% url 'accounts:login' %}" class="nav-link">ログイン</a>
+                            <a href="{% url 'accounts:signup' %}" class="nav-link">新規登録</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        {% if messages %}
+            <div class="messages">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+    </main>
+    
     <a href="{% url 'mdapp:index' %}">一覧へ戻る</a>
     <a href="{% url 'mdapp:create' %}">ファイル作成</a>
 </body>

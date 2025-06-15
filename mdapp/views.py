@@ -5,26 +5,38 @@ from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 from .forms import CreateMdfileForm
 from . import converter, pdf_gerater
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import Http404
+
 
 
 def index(request):
     return render(request, 'mdapp/index.html')
 
-class List(ListView):
+class List(LoginRequiredMixin, ListView):
     model = Mdfile
     template_name = "mdapp/index.html"
+    def get_queryset(self):
+        return Mdfile.objects.filter(user=self.request.user)
 
-class Detail(DeleteView):
+class Detail(LoginRequiredMixin, DeleteView):
     model = Mdfile
     template_name = "mdapp/detail.html"
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404("存在しない記事です")
+        return obj
 
-class CreateFile(CreateView):
+class CreateFile(LoginRequiredMixin, CreateView):
     model = Mdfile
     form_class = CreateMdfileForm
     template_name = "mdapp/create.html"
     # success_url = reverse_lazy('mdapp:index')
     def form_valid(self, form):
         self.object = form.save(commit=False)  # 明示的にobjectを更新
+        self.object.user = self.request.user
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
         self.object.save()
@@ -32,20 +44,26 @@ class CreateFile(CreateView):
     def get_success_url(self):
         return reverse('mdapp:ditail', kwargs={'pk': self.object.id})
 
-class UpdateFile(UpdateView):
+class UpdateFile(LoginRequiredMixin, UpdateView):
     model = Mdfile
     form_class = CreateMdfileForm
     template_name = "mdapp/create.html"
     # success_url = reverse_lazy('mdapp:index')
     def form_valid(self, form):
+        self.object.user = self.request.user
         self.object = form.save()  # 明示的にobjectを更新
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
         return super().form_valid(form)
     def get_success_url(self):
         return reverse('mdapp:ditail', kwargs={'pk': self.object.id})
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)
+        if obj.user != self.request.user:
+            raise Http404("存在しない記事です")
+        return obj
 
-class Delet(DeleteView):
+class Delet(LoginRequiredMixin, DeleteView):
     model = Mdfile
     template_name = "mdapp/detail.html"  # Getの際は詳細へ
     success_url = reverse_lazy('mdapp:index')
@@ -57,10 +75,20 @@ class Delet(DeleteView):
         if referrer_url:
             return HttpResponseRedirect(referrer_url)  # リクエストしてきたページ
         return HttpResponseRedirect(reverse_lazy('mdapp:ditail', kwargs={'pk': id}))  # 分からなければ詳細
+    def get_object(self, queryset=None):
+        obj = super().get_object(queryset)  
+        if obj.user != self.request.user:
+            raise Http404("存在しない記事です")
+        return obj
 
+@login_required
 def get_pdf_bytedeta(request, pk):
     try:
         mdfile_instance = Mdfile.objects.get(pk=pk) 
+
+        if mdfile_instance.user != request.user:
+            raise Http404("存在しない記事です")
+
         html_text = mdfile_instance.html_text
         title = mdfile_instance.title
         pdf_bytes = pdf_gerater.generater(html_text)
@@ -78,3 +106,4 @@ def get_pdf_bytedeta(request, pk):
         # その他の予期せぬエラー
         print(f"ビュー関数内でエラーが発生しました: {e}")
         return HttpResponse(f"エラーが発生しました: {e}", status=500)
+    

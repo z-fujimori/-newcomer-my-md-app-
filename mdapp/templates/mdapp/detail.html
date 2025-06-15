@@ -8,22 +8,25 @@
 
 {% block content %}
 
-    <h1>
-        <div>{{ object.title }}</div>
+<div class="md-container">
+    <div class="flex-container" style="margin-bottom: 5px;">
+        <div style="font-size: xx-large;">{{ object.title }}</div>
         <a href="/files/{{object.id}}/pdf"><i class="fa-solid fa-file-arrow-down"></i></a>
-    </h1>
-
-    <div class="html-fild">
-        <div>{{ object.html_text|safe }}</div>
+        <a href="/files/{{object.id}}/update">更新</a>
+        <form action="/files/{{object.id}}/delete" method="post">
+            {% csrf_token %}
+            <button type="submit">
+                <i class="fa-solid fa-trash"></i>
+            </button>
+        </form>
     </div>
 
-    <a href="/files/{{object.id}}/update">更新</a>
-    <a href="/files/{{object.id}}/delete"><i class="fa-solid fa-trash"></i></a>
-    <form action="/files/{{object.id}}/delete" method="post">
-        {% csrf_token %}
-        <button type="submit">
-            <i class="fa-solid fa-trash"></i>
-        </button>
-    </form>
+    <div class="html-fild">
+        <div class="html-fild_text">
+            {{ object.html_text|safe }}
+        </div>
+    </div>
+
+</div>
 
 {% endblock %}
