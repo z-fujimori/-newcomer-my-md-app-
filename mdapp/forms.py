@@ -22,6 +22,10 @@ class CreateMdfileForm(forms.ModelForm):
     def clean_title(self):
         title = self.cleaned_data['title']
         if Mdfile.objects.filter(user=self.user, title=title).exists():
+            if self.instance.pk:
+                # 既存のインスタンスで、タイトルが変更されていない場合はエラーを出さない
+                if self.instance.title == title:
+                    return title
             raise ValidationError('このファイル名は既に使われています。')
         return title
 
