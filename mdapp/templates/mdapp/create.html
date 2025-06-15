@@ -11,6 +11,15 @@
     
     <form method="post" class="create-md-form">
         {% csrf_token %}
+
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="alert alert-danger">
+                    {{ field.errors|striptags }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
         {{ form.title }}
         {{ form.base_text }}
         <input type="submit" value="🖋">

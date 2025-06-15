@@ -1,5 +1,6 @@
 from django import forms
 from .models import Mdfile
+from django.core.exceptions import ValidationError
 
 class CreateMdfileForm(forms.ModelForm):
     class Meta:
@@ -15,4 +16,12 @@ class CreateMdfileForm(forms.ModelForm):
                 'class': 'form-base_text',
             })
         }
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # ← 必須
+        super().__init__(*args, **kwargs)
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        if Mdfile.objects.filter(user=self.user, title=title).exists():
+            raise ValidationError('このファイル名は既に使われています。')
+        return title
 

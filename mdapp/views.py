@@ -34,6 +34,10 @@ class CreateFile(LoginRequiredMixin, CreateView):
     form_class = CreateMdfileForm
     template_name = "mdapp/create.html"
     # success_url = reverse_lazy('mdapp:index')
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # ここで user を渡す
+        return kwargs
     def form_valid(self, form):
         self.object = form.save(commit=False)  # 明示的にobjectを更新
         self.object.user = self.request.user
@@ -49,9 +53,13 @@ class UpdateFile(LoginRequiredMixin, UpdateView):
     form_class = CreateMdfileForm
     template_name = "mdapp/create.html"
     # success_url = reverse_lazy('mdapp:index')
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # ここで user を渡す
+        return kwargs
     def form_valid(self, form):
-        self.object.user = self.request.user
         self.object = form.save()  # 明示的にobjectを更新
+        self.object.user = self.request.user
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
         return super().form_valid(form)
