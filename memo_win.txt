@@ -1,0 +1,26 @@
+py -3.10 -m venv env
+.\env\Scripts\activate
+pip install django weasyprint pdf2image pillow boto3 python-dotenv
+
+
+# big title
+大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル
+大きなタイトル大きなタイトル大きなタイトル大きなタイトル
+大きなタイトル大きなタイトル大きなタイトル大きなタイトル大きなタイトル
+
+## 中タイトル
+test_text test_text test_text test_text test_text test_text test_text test_text test_text test_text test_text test_text test_text test_text test_text test_text 
+test_text test_text test_text test_text 
+test_text test_text test_text test_text test_text test_text test_text 
+- 箇条書き
+なかみ
+- 箇条書き
+中身
+ー 箇条書き
+
+``` code
+println!("コードブロック")
+```
+
+どんな感じだろうか
+
