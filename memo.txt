@@ -1,0 +1,9 @@
+pdfを画像に
+
+pip install pdf2image pillow
+
+macOS なら Poppler も必要です（内部で pdftoppm を使うため）：
+brew install poppler
+
+S3
+pip install boto3 python-dotenv

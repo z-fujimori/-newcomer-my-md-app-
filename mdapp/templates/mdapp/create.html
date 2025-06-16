@@ -26,16 +26,27 @@
     </form>
 </div>
 
-<script>
+<!-- <script>
     const textarea = document.getElementById('auto-textarea');
+    // function autoResize(el) {
+    //     el.style.height = 'auto';
+    //     el.style.height = el.scrollHeight + 'px';
+    // }
     function autoResize(el) {
-        el.style.height = 'auto';
-        el.style.height = el.scrollHeight + 'px';
+        const scrollY = window.scrollY; // 現在のスクロール位置を記録
+        console.log("0:", scrollY);
+        requestAnimationFrame(() => {
+            el.style.height = 'auto';
+            el.style.height = el.scrollHeight + 'px';
+            window.scrollTo({ top: scrollY }); // 
+        });
+        const scrolY = window.scrollY; // 現在のスクロール位置を記録
+        console.log("1:",scrolY);
     }
     // 入力時
     textarea.addEventListener('input', () => autoResize(textarea));
     // ページ読み込み時にも実行
     window.addEventListener('DOMContentLoaded', () => autoResize(textarea));
-</script>
+</script> -->
 
 {% endblock %}

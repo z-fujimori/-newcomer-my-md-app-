@@ -1,9 +1,7 @@
 import html
 
 def markdown_to_html(base_text):
-    print("ベース: ", base_text)
     lines = base_text.splitlines()
-    print("", lines)
 
     return_text = "<div class='base_css wrap-text'>"
     return_text = analyser(return_text, lines, index=0)
