@@ -4,5 +4,8 @@ venvcp/
 mdapp/__pycache__/
 config/__pycache__/
 accounts/__pycache__/
+
+db.sqlite3
+img.png
 env/
 db.sqlite3

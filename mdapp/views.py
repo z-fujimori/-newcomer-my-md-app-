@@ -3,13 +3,12 @@ from django.views.generic import View, ListView, CreateView, DetailView, UpdateV
 from mdapp.models import Mdfile
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
+
+from .services import converter, pdf_gerater, img_generater
 from .forms import CreateMdfileForm
-from . import converter, pdf_gerater
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
-
-
 
 def index(request):
     return render(request, 'mdapp/index.html')
@@ -107,6 +106,30 @@ def get_pdf_bytedeta(request, pk):
         # ダウンロードさせる場合
         response['Content-Disposition'] = f"""attachment; filename="{title}.pdf" """
         return response
+    except Mdfile.DoesNotExist:
+        # 指定された pk の Mdfile が見つからない場合の処理
+        return HttpResponse("指定された記事が見つかりませんでした。", status=404)
+    except Exception as e:
+        # その他の予期せぬエラー
+        print(f"ビュー関数内でエラーが発生しました: {e}")
+        return HttpResponse(f"エラーが発生しました: {e}", status=500)
+    
+@login_required
+def generate_thumbnail(request, pk):
+    try:
+        mdfile_instance = Mdfile.objects.get(pk=pk)
+        if mdfile_instance.user != request.user:
+            raise Http404("存在しない記事です")
+        html_text = mdfile_instance.html_text
+        title = mdfile_instance.title
+        pdf_bytes = pdf_gerater.generater(html_text)
+        img_url = img_generater.generate_image_from_pdf(pdf_bytes, title)
+        json_data = {
+            'status': 'success',
+            'message': 'サムネイル画像の生成に成功しました。',
+            'img_url': img_url
+        }
+        return HttpResponse(json_data, content_type='application/json')
     except Mdfile.DoesNotExist:
         # 指定された pk の Mdfile が見つからない場合の処理
         return HttpResponse("指定された記事が見つかりませんでした。", status=404)
