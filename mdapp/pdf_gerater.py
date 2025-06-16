@@ -24,7 +24,16 @@ def generater(html_text):
             status=500
         )
 
-    html_content = f"""<!DOCTYPE html><html><head><meta charset='utf-8'><title>PDF</title><style>{css_content}</style></head><body>{html_text}</body></html>"""
+    html_content = f"""
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset='utf-8'>
+            <title>PDF</title>
+            <style>{css_content}</style>
+        </head>
+        <body>{html_text}</body>
+    </html>"""
     pdf_buffer = io.BytesIO()
     try:
         HTMLtoPDF(string=html_content).write_pdf(target=pdf_buffer)

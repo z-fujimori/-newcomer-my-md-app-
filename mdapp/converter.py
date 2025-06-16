@@ -5,8 +5,8 @@ def markdown_to_html(base_text):
     lines = base_text.splitlines()
     print("", lines)
 
-    return_text = "<div>"
-    return_text = analyser(return_text, lines, index=0 )
+    return_text = "<div class='base_css wrap-text'>"
+    return_text = analyser(return_text, lines, index=0)
     return_text += "</div>"
 
     return return_text
@@ -34,7 +34,7 @@ def analyser(return_text, lines, index):
         return_line = nomal_row(line)
     return_text += return_line
     return analyser(return_text, lines, index+1)
- 
+
 def h1(text):
     return "<h1>" + text + "</h1><hr>"
 def h2(text):

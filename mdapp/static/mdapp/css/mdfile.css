@@ -3,6 +3,8 @@
     color: aliceblue;
     padding: 5px;
     position: relative;
+    margin-block-start: 0.3em;
+    margin-block-end: 0.3em;
 }
 .code_block_title {
     font-size: small;
@@ -14,4 +16,36 @@
     top: 0px;
     position: absolute;
 }
-
+.html-fild_text {
+    
+}
+.base_css {
+    font-family: 
+        "M PLUS 1p",
+        "Noto Sans Mono CJK JP",
+        "Meiryo",
+        "Osaka-Mono",
+        "MS Gothic",
+        monospace;
+}
+/* 文字を折り返す */
+.wrap-text {
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+    /* word-break: break-all;
+    white-space: normal; */
+}
+ul {
+    margin-block-start: 0.3em;
+    margin-block-end: 0.3em;
+}
+h1, h2 {
+    margin-left: 5px;
+    margin-block-start: 0.3em;
+    margin-block-end: 0px;
+}
+hr {
+    margin-block-start: 0.3em;
+    margin-block-end: 0.3em;
+}
