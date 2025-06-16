@@ -42,6 +42,8 @@ class CreateFile(LoginRequiredMixin, CreateView):
         self.object.user = self.request.user
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
+        pdf_bytes = pdf_gerater.generater(isinstance.html_text)
+        isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
         self.object.save()
         return super().form_valid(form)
     def get_success_url(self):
@@ -61,6 +63,9 @@ class UpdateFile(LoginRequiredMixin, UpdateView):
         self.object.user = self.request.user
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
+        # imgを作成してS3に保存
+        pdf_bytes = pdf_gerater.generater(isinstance.html_text)
+        isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
         return super().form_valid(form)
     def get_success_url(self):
         return reverse('mdapp:ditail', kwargs={'pk': self.object.id})

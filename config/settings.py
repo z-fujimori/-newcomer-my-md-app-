@@ -9,18 +9,26 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import environ  # 追加
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env()  # 追加
+env.read_env(str(BASE_DIR / '.env'))  # 追加
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4d$egw*l8w)cf(#74%fn+i*64vo*7c*ej(sn%))f&6hls5a9ro'
+# SECRET_KEY = 'django-insecure-4d$egw*l8w)cf(#74%fn+i*64vo*7c*ej(sn%))f&6hls5a9ro'
+SECRET_KEY = env.str('SECRET_KEY')  # 変更
+
+# AWS S3 環境変数
+AWS_ACCESS_KEY_ID = env.str('AWS_ACCESS_KEY_ID')  # 追加
+AWS_SECRET_ACCESS_KEY = env.str('AWS_SECRET_ACCESS_KEY')  # 追加
+AWS_STORAGE_BUCKET_NAME = env.str('AWS_STORAGE_BUCKET_NAME')  # 追加
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

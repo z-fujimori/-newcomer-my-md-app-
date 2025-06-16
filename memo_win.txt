@@ -1,6 +1,6 @@
 py -3.10 -m venv env
 .\env\Scripts\activate
-pip install django weasyprint pdf2image pillow boto3 python-dotenv
+pip install django weasyprint pdf2image pillow boto3 python-dotenv django-environ
 
 
 # big title
