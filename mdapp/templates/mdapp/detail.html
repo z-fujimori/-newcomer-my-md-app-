@@ -1,20 +1,58 @@
 {% extends "base.html" %}
-{% load static %}
+<!-- {% load static %} -->
 
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'mdapp/css/index.css' %}" >
+    <link rel="stylesheet" href="{% static 'mdapp/css/mdfile.css' %}" >
 {% endblock %}
 
 {% block content %}
 
-    <h1>
-        <div>{{ object.title }}</div>
-    </h1>
-
-    <div>
-        <div>{{ object.html_text|safe }}</div>
+<div class="md-container">
+    <div class="flex-container" style="margin-bottom: 5px;">
+        <div style="font-size: xx-large;">{{ object.title }}</div>
+        <form method="get" action="/files/{{object.id}}/pdf">
+            <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-file-arrow-down"></i></button>
+        </form>
+        <form method="get" action="/files/{{ object.id }}/update">
+            <button type="submit" class="btn btn-secondary">更新</button>
+        </form>
+        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            <i class="fa-solid fa-trash"></i>
+        </button>
     </div>
 
-    <a href="/files/{{object.id}}/update">更新</a>
+    <div class="html-fild">
+        <div class="html-fild_text">
+            {{ object.html_text|safe }}
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">注意！</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ object.title }}を削除して大丈夫ですか？<br>  
+                </div>
+                <div class="modal-footer">
+                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                    <form action="/files/{{object.id}}/delete" method="post">
+                        {% csrf_token %}
+                        <!-- <button type="submit">
+                            <i class="fa-solid fa-trash"></i>
+                        </button> -->
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
 
 {% endblock %}

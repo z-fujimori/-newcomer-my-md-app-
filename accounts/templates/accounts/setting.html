@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'accounts/css/setting.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="setting-body">
+    <form action="{% url 'accounts:setting' %}" method="POST">
+        {% csrf_token %}
+        <div class="input-field">
+            <label for="max_weekly_limit">週間予算</label>
+            <input class="input-weekly-limit" type="number" value="{{ max_weekly_limit }}" name="max_weekly_limit">
+        </div>
+        <div class="input-field">
+            <label for="monthly_buffer">月末バッファ</label>
+            <input class="input-monthly-buffer" type="number" value="{{ monthly_buffer }}" name="monthly_buffer">
+        </div>
+        <input type="submit" class="submit-button" value="保存">
+    </form>
+</div>
+
+{% endblock %}

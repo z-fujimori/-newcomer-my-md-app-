@@ -15,6 +15,12 @@
             <a href="/files/{{item.id}}">{{ item.title }}</a>
             <!-- <div> {{ item.base_text }} </div>
             <div> {{ item.html_text }} </div> -->
+            <form action="/files/{{item.id}}/delete" method="post">
+                {% csrf_token %}
+                <button type="submit">
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </form>
         </div>
         {% endfor %}
     {% endif %}

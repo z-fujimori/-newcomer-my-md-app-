@@ -6,15 +6,36 @@
 {% endblock %}
 
 {% block content %}
-<div class="body">
-    <h1>ファイル作成画面</h1>
+<div class="md-container">
+    <!-- <h1>ファイル作成画面</h1> -->
     
-    <form method="post">
+    <form method="post" class="create-md-form">
         {% csrf_token %}
+
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="alert alert-danger">
+                    {{ field.errors|striptags }}
+                </div>
+            {% endif %}
+        {% endfor %}
+
         {{ form.title }}
         {{ form.base_text }}
         <input type="submit" value="🖋">
     </form>
 </div>
+
+<script>
+    const textarea = document.getElementById('auto-textarea');
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = el.scrollHeight + 'px';
+    }
+    // 入力時
+    textarea.addEventListener('input', () => autoResize(textarea));
+    // ページ読み込み時にも実行
+    window.addEventListener('DOMContentLoaded', () => autoResize(textarea));
+</script>
 
 {% endblock %}

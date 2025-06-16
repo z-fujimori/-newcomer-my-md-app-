@@ -5,8 +5,8 @@ def markdown_to_html(base_text):
     lines = base_text.splitlines()
     print("", lines)
 
-    return_text = "<div>"
-    return_text = analyser(return_text, lines, index=0 )
+    return_text = "<div class='base_css wrap-text'>"
+    return_text = analyser(return_text, lines, index=0)
     return_text += "</div>"
 
     return return_text
@@ -25,16 +25,16 @@ def analyser(return_text, lines, index):
         return_line, index = ul_li("<ul>", lines, index)
     elif line_split[0] == "```":
         if not len(line_split) == 1:
-            text = f"<per class='code_block'><span class='code_block_title'>{line[4:]}<br></span><code>"
+            text = f"<div class='code_block'><div class='code_block_title'>{line[4:]}</div><br><per><code>"
         else:
-            text = f"<per class='code_block'><code>"
+            text = f"<div class='code_block'><per><code>"
         return_line, index = code_block(text, lines, index+1)
-        return_line += "</per></code>"
+        return_line += "</code></per></div>"
     else:
         return_line = nomal_row(line)
     return_text += return_line
     return analyser(return_text, lines, index+1)
- 
+
 def h1(text):
     return "<h1>" + text + "</h1><hr>"
 def h2(text):
