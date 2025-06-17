@@ -11,15 +11,6 @@
 <div class="md-container">
     <div class="flex-container" style="margin-bottom: 5px;">
         <div style="font-size: xx-large;">{{ object.title }}</div>
-        <form method="get" action="/files/{{object.id}}/pdf">
-            <button type="submit" class="btn btn-secondary"><i class="fa-solid fa-file-arrow-down"></i></button>
-        </form>
-        <form method="get" action="/files/{{ object.id }}/update">
-            <button type="submit" class="btn btn-secondary">更新</button>
-        </form>
-        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
-            <i class="fa-solid fa-trash"></i>
-        </button>
     </div>
 
     <div class="html-fild">
@@ -27,10 +18,10 @@
             {{ object.html_text|safe }}
         </div>
     </div>
-
+<!-- 
     <div>
         <a href="/files/{{ object.id }}/img">img生成</a>
-    </div>
+    </div> -->
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -55,6 +46,25 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <div class="btn-group-vertical side-buttons" role="group" aria-label="Vertical button group">
+        <!-- <button type="button" class="btn btn-primary">Button</button>
+        <button type="button" class="btn btn-primary">Button</button>
+        <button type="button" class="btn btn-primary">Button</button> -->
+        <form method="get" action="/files/{{object.id}}/pdf" style="width: 100%;">
+            <button type="submit" class="btn btn-secondary col-button" >
+                <i class="fa-solid fa-file-arrow-down"></i>
+            </button>
+        </form>
+        <form method="get" action="/files/{{ object.id }}/update" style="width: 100%;">
+            <button type="submit" class="btn btn-secondary col-button">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+        </form>
+        <button type="button" class="btn btn-danger col-button" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+            <i class="fa-solid fa-trash"></i>
+        </button>
     </div>
 
 </div>

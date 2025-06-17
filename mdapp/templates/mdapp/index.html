@@ -2,28 +2,81 @@
 {% load static %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'mdapp/css/index.css' %}" >
 {% endblock %}
 
 {% block content %}
 
-<h1>とりまホーム画面</h1>
-
-<div >
-    {% if object_list %}
-        {% for item in object_list %}
-        <div style="padding: 5px; margin: 5px; border: 1px solid black;">
-            <a href="/files/{{item.id}}">{{ item.title }}</a>
-            <!-- <div> {{ item.base_text }} </div>
-            <div> {{ item.html_text }} </div> -->
-            <form action="/files/{{item.id}}/delete" method="post">
-                {% csrf_token %}
-                <button type="submit">
-                    <i class="fa-solid fa-trash"></i>
-                </button>
-            </form>
+<!-- <h1>とりまホーム画面</h1> -->
+<div class="" style="display: flex; justify-content: center;">
+    <div class="center-block" style="max-width: 800px; margin-left: 50px; margin-right: 50px;">
+        <div class="row row-cols-2 row-cols-md-3 g-4">
+            {% if object_list %}
+                {% for item in object_list %}
+                    <div class="col">
+                        <div class="card h-60">
+                            <a href="/files/{{item.id}}">
+                                {% if item.url %}
+                                    <img src="{{ item.url }}" class="card-img-top" alt="...">
+                                {% else %}
+                                <img src="{% static 'mdapp/img/NoIMG.jpg' %}" class="card-img-top" alt="...">
+                                {% endif %}
+                            </a>
+                            <div class="card-body card-body-css" style="display: flex; justify-content: space-between; align-items: center; background-color: rgb(240, 240, 240);">
+                                <a href="/files/{{item.id}}">
+                                    <h5 class="card-title">{{ item.title }}</h5>
+                                </a>
+                                <!-- <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p> -->
+                                <div class="dropdown">
+                                    <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="/files/{{object.id}}/pdf">PDFとして保存</a></li>
+                                        <li><a class="dropdown-item" href="/files/{{ object.id }}/update">編集</a></li>
+                                        <li style=""><button type="button" class="" data-bs-toggle="modal" data-bs-target="#exampleModal" style="border: none; background: none; padding: 0;">
+                                            <a class="dropdown-item" href="#">削除</a>
+                                        </button></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Modal -->
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">注意！</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    {{ item.title }}を削除して大丈夫ですか？<br>  
+                                </div>
+                                <div class="modal-footer">
+                                    <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+                                    <form action="/files/{{item.id}}/delete" method="post">
+                                        {% csrf_token %}
+                                        <!-- <button type="submit">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button> -->
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                    <h4 style="width: 300px;">右下からノートを追加！</h4>
+            {% endif %}        
         </div>
-        {% endfor %}
-    {% endif %}
+    </div>
+    <form action="/create" style="position: fixed; bottom: 60px; right: 70px;">
+        <button type="submit" class="edit-button" style="">
+            <i class="fa-solid fa-pen edit-button-pen" style="font-size: 25px;"></i>
+        </button>
+    </form>
 </div>
 
 {% endblock %}

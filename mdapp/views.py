@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.views.generic import View, ListView, CreateView, DetailView, UpdateView, DeleteView
-from mdapp.models import Mdfile
+from mdapp.models import Mdfile, Share
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 
 from .services import converter, pdf_gerater, img_generater
 from .forms import CreateMdfileForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 
@@ -42,6 +43,8 @@ class CreateFile(LoginRequiredMixin, CreateView):
         self.object.user = self.request.user
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
+        pdf_bytes = pdf_gerater.generater(isinstance.html_text)
+        isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
         self.object.save()
         return super().form_valid(form)
     def get_success_url(self):
@@ -61,6 +64,9 @@ class UpdateFile(LoginRequiredMixin, UpdateView):
         self.object.user = self.request.user
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
+        # imgを作成してS3に保存
+        pdf_bytes = pdf_gerater.generater(isinstance.html_text)
+        isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
         return super().form_valid(form)
     def get_success_url(self):
         return reverse('mdapp:ditail', kwargs={'pk': self.object.id})
@@ -138,3 +144,9 @@ def generate_thumbnail(request, pk):
         print(f"ビュー関数内でエラーが発生しました: {e}")
         return HttpResponse(f"エラーが発生しました: {e}", status=500)
     
+@login_required
+@require_POST
+def share(request, pk):
+    if request.method == "GET":
+        return HttpResponse("getリクエストはありません", status=404)
+        
