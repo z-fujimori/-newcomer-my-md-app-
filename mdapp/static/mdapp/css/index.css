@@ -68,3 +68,67 @@
     text-align: inherit; /* テキストの配置を親から継承 */
     outline: none; /* フォーカス時のアウトラインを消す（後述） */
 }
+
+.edit-button {
+    height: 60px;
+    width: 60px;
+    border: 4px solid #919191;
+    border-radius: 100px;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+.edit-button:hover {
+    /* font-size: 50px; */
+    color: rgb(228, 228, 228);
+    /* border: 4px solid #252525; */
+    background-color: #919191;
+    transform: scale(1.05);
+}
+
+.side-buttons { 
+    position: fixed;
+    /* top: 50%; まずはビューポートの中央に要素の左上を配置 */
+    left: 50%;
+    /* 自身のサイズの半分だけ戻すことで、要素の中心がビューポートの中心に来る */
+    transform: translate(-50%, ); 
+    /* ここからが「中心からの距離調整」 */
+    /* 例: ビューポートの中心から右に100px、下に50pxずらす */
+    margin-left: 325px; 
+    /* margin-top: -380px; */
+    top: 155px;
+
+    border: 1px solid #919191;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.col-button {
+    border: 1px solid #919191;
+    border-radius: 0px;
+}
+
+.submit-button {
+    height: 45px;
+    width: 45px;
+    border: none;
+    border: 4px solid #919191;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease;
+    top: 100px
+}
+.submit-button:hover {
+    /* font-size: 50px; */
+    color: rgb(228, 228, 228);
+    /* border: 4px solid #252525; */
+    background-color: #919191;
+    transform: scale(1.05);
+}

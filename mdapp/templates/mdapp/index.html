@@ -2,6 +2,7 @@
 {% load static %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'mdapp/css/index.css' %}" >
 {% endblock %}
 
 {% block content %}
@@ -66,10 +67,16 @@
                         </div>
                     </div>
                 {% endfor %}
+            {% else %}
+                    <h4 style="width: 300px;">右下からノートを追加！</h4>
             {% endif %}        
         </div>
-    
     </div>
+    <form action="/create" style="position: fixed; bottom: 60px; right: 70px;">
+        <button type="submit" class="edit-button" style="">
+            <i class="fa-solid fa-pen edit-button-pen" style="font-size: 25px;"></i>
+        </button>
+    </form>
 </div>
 
 {% endblock %}

@@ -9,6 +9,22 @@ def generate_id(length=8):
         if not Mdfile.objects.filter(id=new_id).exists():
             return new_id
 
+class Share(models.Model):
+    id = models.CharField(
+        primary_key=True,
+        max_length=20,
+        unique=True,
+        default=generate_id,
+        editable=False
+    )
+    file = models.ForeignKey(
+        "mdapp.Mdfile",
+        on_delete=models.CASCADE
+    )
+    to_user = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.CASCADE
+    )
 
 # Create your models here.
 class Mdfile(models.Model):

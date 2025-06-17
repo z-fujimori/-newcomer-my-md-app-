@@ -1,12 +1,13 @@
 from django.shortcuts import render
 from django.views.generic import View, ListView, CreateView, DetailView, UpdateView, DeleteView
-from mdapp.models import Mdfile
+from mdapp.models import Mdfile, Share
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
 
 from .services import converter, pdf_gerater, img_generater
 from .forms import CreateMdfileForm
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import Http404
 
@@ -143,3 +144,9 @@ def generate_thumbnail(request, pk):
         print(f"ビュー関数内でエラーが発生しました: {e}")
         return HttpResponse(f"エラーが発生しました: {e}", status=500)
     
+@login_required
+@require_POST
+def share(request, pk):
+    if request.method == "GET":
+        return HttpResponse("getリクエストはありません", status=404)
+        
