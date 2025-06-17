@@ -17,7 +17,7 @@
                         <div class="card h-60">
                             <a href="/files/{{item.id}}">
                                 {% if item.url %}
-                                    <img src="{{ item.url }}" class="card-img-top" alt="...">
+                                    <img src="{{ item.url }}" class="card-img-top" alt="..." onerror="this.onerror=null; this.src=`{% static 'mdapp/img/NoIMG.jpg' %}`;">
                                 {% else %}
                                 <img src="{% static 'mdapp/img/NoIMG.jpg' %}" class="card-img-top" alt="...">
                                 {% endif %}
@@ -31,8 +31,8 @@
                                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/files/{{object.id}}/pdf">PDFとして保存</a></li>
-                                        <li><a class="dropdown-item" href="/files/{{ object.id }}/update">編集</a></li>
+                                        <li><a class="dropdown-item" href="/files/{{item.id}}/pdf">PDFとして保存</a></li>
+                                        <li><a class="dropdown-item" href="/files/{{ item.id }}/update">編集</a></li>
                                         <div class="btn-group dropend">
                                             <button id="" type="button" class="dropdown-toggle share-togle-index" data-bs-toggle="dropdown" aria-expanded="false">
                                                 共有
