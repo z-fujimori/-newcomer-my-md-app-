@@ -1,24 +1,28 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.generic import View, ListView, CreateView, DetailView, UpdateView, DeleteView
 from mdapp.models import Mdfile, Share
 from django.urls import reverse, reverse_lazy
 from django.http import HttpResponseRedirect, HttpResponse
-
 from .services import converter, pdf_gerater, img_generater
-from .forms import CreateMdfileForm
+from .forms import CreateMdfileForm, ShareForm
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import Http404
+from django.http import Http404, JsonResponse
 
-def index(request):
-    return render(request, 'mdapp/index.html')
+# def index(request):
+#     return render(request, 'mdapp/index.html')
 
 class List(LoginRequiredMixin, ListView):
     model = Mdfile
     template_name = "mdapp/index.html"
     def get_queryset(self):
-        return Mdfile.objects.filter(user=self.request.user)
+        return Mdfile.objects.filter(user=self.request.user).order_by("-created_at")
+    # コンテキストを追加
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['share_form'] = ShareForm(sharer=self.request.user)
+        return context
 
 class Detail(LoginRequiredMixin, DeleteView):
     model = Mdfile
@@ -143,10 +147,76 @@ def generate_thumbnail(request, pk):
         # その他の予期せぬエラー
         print(f"ビュー関数内でエラーが発生しました: {e}")
         return HttpResponse(f"エラーが発生しました: {e}", status=500)
-    
+
+class Shared(LoginRequiredMixin, ListView):
+    model = Share
+    template_name = "mdapp/shared.html"
+    def get_queryset(self):
+        shared_files = Share.objects.filter(to_user=self.request.user).select_related("file", "file__user").order_by('created_at')
+        files = []
+        for f in shared_files:
+            files.append({
+                "shared_id": f.id,
+                "file_id": f.file.id,
+                "title": f.file.title,
+                "base_text": f.file.base_text,
+                "html_text": f.file.html_text,
+                "url": f.file.url,
+                "auther_user_id": f.file.user.id,
+                "auther_user_name": f.file.user.name,
+                "shared_at": f.created_at
+            })
+        return files
+
+class CreateShared(CreateFile):
+    model = Mdfile
+    form_class = CreateMdfileForm
+    template_name = "mdapp/create.html"
+    # success_url = reverse_lazy('mdapp:index')
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user  # ここで user を渡す
+        return kwargs
+    def get_initial(self):
+        share_id = self.kwargs.get('pk')
+        try:
+            share_instance= get_object_or_404(
+                Share.objects.select_related('file', 'file__user'), 
+                pk=share_id,
+                to_user=self.request.user
+            )
+            initial = super().get_initial()
+            initial["title"] = f"{share_instance.file.title}_by_{share_instance.file.user.name}"
+            initial["base_text"] = share_instance.file.base_text
+        except Exception as e:
+            print(e)
+        return initial
+
 @login_required
 @require_POST
 def share(request, pk):
-    if request.method == "GET":
-        return HttpResponse("getリクエストはありません", status=404)
-        
+    mdfile = Mdfile.objects.get(pk=pk)
+    if mdfile.user != request.user:
+        raise Http404("存在しない記事です")
+    print("テストテキスト",mdfile)
+    print("テストテキスト",request.POST)
+    form = ShareForm(request.POST, sharer=request.user)
+    status_code = 200
+    if form.is_valid():
+        to_user = form.cleaned_data["to_user"]
+        if not Share.objects.filter(file=mdfile, to_user=to_user).exists():
+            Share.objects.create(
+                file=mdfile,
+                to_user=to_user
+            )
+            res_data = {"status": "success", "message": f"{to_user.name}にファイル[{mdfile.title}]を共有しました"}
+        else:
+            res_data = {"status": "info", "message": f"ファイル[{mdfile.title}]は{to_user.name}に既に共有済みです"}
+    else:
+        status_code = 400
+        res_data = {"status": "error", "message": f"データが間違っています"}
+        return HttpResponse(f"formエラー:", status=500)
+    if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+        return JsonResponse(res_data, status=status_code)
+    
+    

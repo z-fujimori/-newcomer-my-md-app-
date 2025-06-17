@@ -13,5 +13,7 @@ urlpatterns = [
     path('files/<str:pk>/delete', login_required(views.Delet.as_view()), name='delete'),
     path('files/<str:pk>/pdf', login_required(views.get_pdf_bytedeta), name='pdf'),
     path('files/<str:pk>/img', login_required(views.generate_thumbnail), name='img'),
-    path('files/<str:pk>/share', login_required(views.share), name='share')
+    path('files/<str:pk>/share', login_required(views.share), name='share'),
+    path('shared/', login_required(views.Shared.as_view()), name='shared'),
+    path('shared/<str:pk>/create', login_required(views.CreateShared.as_view()), name="create_shared")
 ]

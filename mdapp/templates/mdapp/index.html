@@ -17,7 +17,7 @@
                         <div class="card h-60">
                             <a href="/files/{{item.id}}">
                                 {% if item.url %}
-                                    <img src="{{ item.url }}" class="card-img-top" alt="...">
+                                    <img src="{{ item.url }}" class="card-img-top" alt="..." onerror="this.onerror=null; this.src=`{% static 'mdapp/img/NoIMG.jpg' %}`;">
                                 {% else %}
                                 <img src="{% static 'mdapp/img/NoIMG.jpg' %}" class="card-img-top" alt="...">
                                 {% endif %}
@@ -27,13 +27,25 @@
                                     <h5 class="card-title">{{ item.title }}</h5>
                                 </a>
                                 <!-- <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p> -->
-                                <div class="dropdown">
+                                <div class="dropdown stopEventChild" style="">
                                     <a class="btn btn-secondary dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     </a>
                                     <ul class="dropdown-menu">
-                                        <li><a class="dropdown-item" href="/files/{{object.id}}/pdf">PDFとして保存</a></li>
-                                        <li><a class="dropdown-item" href="/files/{{ object.id }}/update">編集</a></li>
-                                        <li style=""><button type="button" class="" data-bs-toggle="modal" data-bs-target="#exampleModal" style="border: none; background: none; padding: 0;">
+                                        <li><a class="dropdown-item" href="/files/{{item.id}}/pdf">PDFとして保存</a></li>
+                                        <li><a class="dropdown-item" href="/files/{{ item.id }}/update">編集</a></li>
+                                        <div class="btn-group dropend">
+                                            <button id="" type="button" class="dropdown-toggle share-togle-index" data-bs-toggle="dropdown" aria-expanded="false">
+                                                共有
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <form id="share-form-{{ item.id }}" method="post" action="{% url 'mdapp:share' pk=item.id %}">
+                                                    {% csrf_token %}
+                                                    {{ share_form.as_p }}
+                                                    <input type="submit">
+                                                </form>
+                                            </ul>
+                                        </div>
+                                        <li style=""><button type="button" class="" data-bs-toggle="modal" data-bs-target="#indexDeleteModal" item-title="{{ item.title }}" item-id="{{ item.id }}"  style="border: none; background: none; padding: 0;">
                                             <a class="dropdown-item" href="#">削除</a>
                                         </button></li>
                                     </ul>
@@ -41,9 +53,10 @@
                             </div>
                         </div>
                     </div>
-                    
+                    {% endfor %}
+
                     <!-- Modal -->
-                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="indexDeleteModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -51,11 +64,11 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    {{ item.title }}を削除して大丈夫ですか？<br>  
+                                    <span id="modalDeleteItemTitle"></span>を削除して大丈夫ですか？<br>  
                                 </div>
                                 <div class="modal-footer">
                                     <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
-                                    <form action="/files/{{item.id}}/delete" method="post">
+                                    <form id="deleteForm" method="post">
                                         {% csrf_token %}
                                         <!-- <button type="submit">
                                             <i class="fa-solid fa-trash"></i>
@@ -66,7 +79,6 @@
                             </div>
                         </div>
                     </div>
-                {% endfor %}
             {% else %}
                     <h4 style="width: 300px;">右下からノートを追加！</h4>
             {% endif %}        
@@ -78,5 +90,46 @@
         </button>
     </form>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // 該当要素が複数あるのでforcachですべてにイベントをつける
+        const buttons = document.getElementsByClassName('stopEventChild');
+        Array.from(buttons).forEach(function(button) {
+            button.addEventListener('click', function(event) {
+                // 親要素へのイベント伝播を停止
+                event.stopPropagation();
+            });
+        });
+
+        // formに非同期イベントを実装
+        document.querySelectorAll("form[id^='share-form-']").forEach(form => {
+            form.addEventListener("submit", async function(event) {
+                event.preventDefault(); // submit停止
+                const formData = new FormData(this);
+                try {
+                    const res = await fetch(this.action, {
+                        method: "POST",
+                        headers: {
+                            "X-Requested-With": "XMLHttpRequest",
+                            "X-CSRFToken": formData.get("csrfmiddlewaretoken"), // hidden inputからCSRFトークンを取得　できるらしい
+                        },
+                        body: formData
+                    });
+                    const data = await res.json();
+                    console.log(data)
+                    if (res.ok) {
+                        alert(data["message"])
+                    } else {
+                        alert('シェアできませんでした')
+                    }
+                } catch (e) {
+                    console.error(e)
+                    alert('error')
+                }
+            });
+        });
+    });
+</script>
 
 {% endblock %}
