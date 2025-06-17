@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.utils import timezone
 
 def generate_id(length=8):
     import string, random
@@ -25,6 +26,7 @@ class Share(models.Model):
         "accounts.User",
         on_delete=models.CASCADE
     )
+    created_at = models.DateTimeField(verbose_name='登録日時', auto_now_add=True)
 
 # Create your models here.
 class Mdfile(models.Model):

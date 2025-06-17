@@ -9,6 +9,12 @@ class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ("id", "email", "name") 
+    
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        if User.objects.filter(email=email).exists():
+            raise forms.ValidationError("このメールアドレスは既に使用されています。")
+        return email
 
 class CustomAuthenticationForm(forms.Form):
     email = forms.EmailField(label="メールアドレス")

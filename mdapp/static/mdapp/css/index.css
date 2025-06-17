@@ -111,6 +111,10 @@
     border-radius: 0px;
 }
 
+.side-button-submit {
+    top: 105px;
+}
+
 .submit-button {
     height: 45px;
     width: 45px;
@@ -131,4 +135,20 @@
     /* border: 4px solid #252525; */
     background-color: #919191;
     transform: scale(1.05);
+}
+
+.share-togle-index {
+    border: none;
+    background-color: white;
+    margin-left: 10px;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    .side-buttons { 
+        top: 250px;
+    }
+    .side-button-submit {
+        top: 250px;
+    }
 }
