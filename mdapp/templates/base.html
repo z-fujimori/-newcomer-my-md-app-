@@ -15,11 +15,11 @@
     {% block extra_css %}{% endblock %}
 </head>
 <body >
-    <header>
+    <header style="">
         <nav>
             <div class="container">
                 <div class="nav-content">
-                    <a href="{% url 'mdapp:index' %}" class="logo">MDノート</a>
+                    <a href="{% url 'mdapp:index' %}" class="logo">#_mdメモ</a>
                     
                     <div class="nav-links">
                         {% if user.is_authenticated %}

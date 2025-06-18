@@ -36,7 +36,7 @@ class ShareForm(forms.ModelForm):
         fields = ['to_user']
     # 'to_user' という名前のフィールドを定義
     to_user = forms.ModelChoiceField(
-        queryset=User.objects.all(), # データベースからすべてのユーザーを取得
+        queryset=User.objects.all().order_by("-created_at"), # データベースからすべてのユーザーを取得
         label="シェアするユーザー",    # フォームに表示されるラベル
         empty_label="ユーザーを選択してください", # 選択されていない場合のデフォルト表示
         # required=True, # デフォルトでTrue。選択必須にするなら明示的に書いても良い
