@@ -1,4 +1,5 @@
 import html
+import re
 
 def markdown_to_html(base_text):
     lines = base_text.splitlines()
@@ -14,12 +15,14 @@ def analyser(return_text, lines, index):
         return return_text
     
     line = lines[index]
-    line_split = line.split(' ')
-    if line_split[0] == "#":
+    pattern_robust = re.compile(r'[　 ]+')
+    line_split = pattern_robust.split(line)
+    # line_split = line.split(' ')
+    if line_split[0] == "#" or line_split[0] == "＃":
         return_line = h1(line[2:])
-    elif line_split[0] == "##":
+    elif line_split[0] == "##" or line_split[0] == "###" or line_split[0] == "＃＃" or line_split[0] == "＃＃＃":
         return_line = h2(line[3:])
-    elif line_split[0] == "-" or line_split[0] == "・":
+    elif line_split[0] == "-" or line_split[0] == "・"or line_split[0] == "ー":
         return_line, index = ul_li("<ul>", lines, index)
     elif line_split[0] == "```":
         if not len(line_split) == 1:
