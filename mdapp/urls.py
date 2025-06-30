@@ -14,6 +14,7 @@ urlpatterns = [
     path('files/<str:pk>/pdf', login_required(views.get_pdf_bytedeta), name='pdf'),
     path('files/<str:pk>/img', login_required(views.generate_thumbnail), name='img'),
     path('files/<str:pk>/share', login_required(views.share), name='share'),
+    path('img/<str:filename>', login_required(views.get_img), name='get_img'),
     path('shared/', login_required(views.Shared.as_view()), name='shared'),
     path('shared/<str:pk>/create', login_required(views.CreateShared.as_view()), name="create_shared")
 ]

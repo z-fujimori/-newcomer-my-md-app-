@@ -13,6 +13,8 @@ from django.http import Http404, JsonResponse
 # def index(request):
 #     return render(request, 'mdapp/index.html')
 
+img_strage_mode = "local"  # "s3" or "local"
+
 class List(LoginRequiredMixin, ListView):
     model = Mdfile
     template_name = "mdapp/index.html"
@@ -48,7 +50,12 @@ class CreateFile(LoginRequiredMixin, CreateView):
         isinstance = form.instance
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
         pdf_bytes = pdf_gerater.generater(isinstance.html_text)
-        isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
+        if img_strage_mode == "s3":
+            print("S3に保存")
+            isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
+        elif img_strage_mode == "local":
+            print("ローカルに保存")
+            isinstance.url = img_generater.generate_image_from_pdf_local(pdf_bytes, isinstance.title, self.request.user.name)
         self.object.save()
         return super().form_valid(form)
     def get_success_url(self):
@@ -70,7 +77,12 @@ class UpdateFile(LoginRequiredMixin, UpdateView):
         isinstance.html_text = converter.markdown_to_html(isinstance.base_text)
         # imgを作成してS3に保存
         pdf_bytes = pdf_gerater.generater(isinstance.html_text)
-        isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
+        if img_strage_mode == "s3":
+            print("S3に保存")
+            isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
+        elif img_strage_mode == "local":
+            print("ローカルに保存")
+            isinstance.url = img_generater.generate_image_from_pdf_local(pdf_bytes, isinstance.title, self.request.user.name)
         return super().form_valid(form)
     def get_success_url(self):
         return reverse('mdapp:ditail', kwargs={'pk': self.object.id})
@@ -133,7 +145,12 @@ def generate_thumbnail(request, pk):
         html_text = mdfile_instance.html_text
         title = mdfile_instance.title
         pdf_bytes = pdf_gerater.generater(html_text)
-        img_url = img_generater.generate_image_from_pdf(pdf_bytes, title)
+        if img_strage_mode == "s3":
+            print("S3に保存")
+            isinstance.url = img_generater.generate_image_from_pdf(pdf_bytes, isinstance.title)
+        elif img_strage_mode == "local":
+            print("ローカルに保存")
+            isinstance.url = img_generater.generate_image_from_pdf_local(pdf_bytes, isinstance.title, self.request.user.name)
         json_data = {
             'status': 'success',
             'message': 'サムネイル画像の生成に成功しました。',
@@ -147,6 +164,18 @@ def generate_thumbnail(request, pk):
         # その他の予期せぬエラー
         print(f"ビュー関数内でエラーが発生しました: {e}")
         return HttpResponse(f"エラーが発生しました: {e}", status=500)
+    
+@login_required
+def get_img(request, filename):
+    try:
+        # 画像のパスを指定
+        img_path = f"mdapp/static/mdapp/img/thumbs/{filename}"
+        with open(img_path, 'rb') as img_file:
+            response = HttpResponse(img_file.read(), content_type="image/jpeg")
+            response['Content-Disposition'] = f'inline; filename="{filename}"'
+            return response
+    except FileNotFoundError:
+        return HttpResponse("画像が見つかりませんでした。", status=404)
 
 class Shared(LoginRequiredMixin, ListView):
     model = Share
